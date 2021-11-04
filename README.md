@@ -51,7 +51,7 @@ The ``readTimer`` function returns a 64 bit unsigned number (``uint64_t``) that 
 * Save the current counter value into the LO and HI registers. The hardware timer will do this when __any__ write occurs on the UPDATE register.
 * Use the LO and HI registers to get the bottom 32 and upper 32 bits of the counter and return it.
 
-### Step 4
+### Step 4: Checking it is working correctly
 In the loop function we have the following code:
 ```C
 void loop() {
@@ -63,4 +63,6 @@ void loop() {
 
 The ``displayTimer()`` function displays the bottom 32 bits of the timer counter value, obtained from the ``readTimer`` function, over serial. The timer count that you see should correspond to the 1000ms delay caused by ``delay(1000);`` make sure that the value you observe makes sense to ensure that your timer is configured correctly. It should be almost 1s, in reality I find it is slightly lower, like 0.9999985 seconds. __NOTE: pay attenting to the prescaler clock divider value that is passed into the ``timerSetup`` in the ``setup()`` function__.
 
+## Task 2 : designing a hardware timer peripheral in Verilog
 
+In this task you will design a memory-mapped hardware peripheral in Verilog. It will have same interface as the one you configured in Task 1. You will have to describe the hardware module in Verilog and you will be able to alter the C code that interacts with it from software.  
