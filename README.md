@@ -47,4 +47,20 @@ The ``resetTimer`` function resets the timer value so that it starts counter aga
 * Perform __any__ write operation on the LOAD register to load {LOADHI, LOADLO} into the counter.
 
 ### Step 3: ``readTimer``
-The ``readTimer`` function 
+The ``readTimer`` function returns a 64 bit unsigned number (``uint64_t``) that contains the current value of the timer. To do this it needs to do the following:
+* Save the current counter value into the LO and HI registers. The hardware timer will do this when __any__ write occurs on the UPDATE register.
+* Use the LO and HI registers to get the bottom 32 and upper 32 bits of the counter and return it.
+
+### Step 4
+In the loop function we have the following code:
+```C
+void loop() {
+	resetTimer();
+	delay(1000);
+	displayTimer();
+}
+```
+
+The ``displayTimer()`` function displays the bottom 32 bits of the timer counter value, obtained from the ``readTimer`` function, over serial. The timer count that you see should correspond to the 1000ms delay caused by ``delay(1000);`` make sure that the value you observe makes sense to ensure that your timer is configured correctly. It should be almost 1s, in reality I find it is slightly lower, like 0.9999985 seconds. __NOTE: pay attenting to the prescaler clock divider value that is passed into the ``timerSetup`` in the ``setup()`` function__.
+
+
