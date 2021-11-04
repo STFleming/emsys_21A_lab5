@@ -66,3 +66,11 @@ The ``displayTimer()`` function displays the bottom 32 bits of the timer counter
 ## Task 2 : designing a hardware timer peripheral in Verilog
 
 In this task you will design a memory-mapped hardware peripheral in Verilog. It will have same interface as the one you configured in Task 1. You will have to describe the hardware module in Verilog and you will be able to alter the C code that interacts with it from software.  
+
+### Step 1: Setting up the software
+
+### Step 2: Hardware timer without prescaler
+![](misc/timer_hardware_without_prescaler.png)
+
+### Step 3: Hardware timer with prescaler
+![](misc/timer_hardware_with_prescaler.png)
