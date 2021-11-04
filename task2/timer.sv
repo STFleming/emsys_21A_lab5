@@ -19,16 +19,33 @@ module timer (
 );
 // -------------------------------
 
-logic [31:0] reg1;
-logic [31:0] reg2;
+// The timer registers
+logic [31:0] config_reg;
+logic [31:0] lo_reg;
+logic [31:0] hi_reg;
+logic [31:0] loadlo_reg;
+logic [31:0] loadhi_reg;
 
-// write interface
+logic load_triggered;
+
+// write interface logic
 always_ff @(posedge clk) begin
 
-        if ((addr_in[31:16] == 16'hFFFF) & wr_in) begin
+        // default
+        load_triggered <= 1'b0;
+
+        if ((addr_in[31:16] == 16'h3FF5) & wr_in) begin
                 case(addr_in[15:0])
-                        16'h0000: reg1 <= data_in;
-                        16'h0004: reg2 <= data_in;
+
+                        // config register write
+                        16'hF000: config_reg <= data_in;
+
+                        // Trigger a load
+                        16'hF020: begin
+                                load_triggered <= 1'b1;               
+                        end
+
+                        // default -- do nothing
                         default: begin
 
                         end
@@ -36,21 +53,25 @@ always_ff @(posedge clk) begin
         end
 
         if (rst) begin
-                reg1 <= 32'd0;
-                reg2 <= 32'd0;
+                config_reg <= 32'd0;
         end
 
 end
 
 
-// read interface
+// read interface logic
 always_ff @(posedge clk) begin
         rd_valid_out <= rd_in;
 
-        if ((addr_in[31:16] == 16'hFFFF) & rd_in) begin
+        if ((addr_in[31:16] == 16'h3FF5) & rd_in) begin
                 case(addr_in[15:0])
-                        16'h0000: data_out <= reg1;
-                        16'h0004: data_out <= reg2;
+
+                        // Reading the config register
+                        16'hF000: begin 
+                                data_out <= config_reg;
+                        end
+
+                        // default -- do nothing
                         default: begin
 
                         end

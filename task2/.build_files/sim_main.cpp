@@ -104,6 +104,21 @@ uint32_t regRead(uint32_t addr) {
 	return resp.data;
 }
 
+// used to delay the thread by n clock cycles
+void delay(uint32_t n) {
+        time_mtx.lock();
+        uint64_t c_time = main_time;
+        time_mtx.unlock();
+
+        uint64_t s_time = c_time;
+        while(s_time + (2*n) + 8 > c_time) {
+                time_mtx.lock();
+                c_time = main_time;
+                time_mtx.unlock();
+        }
+        return;
+}
+
 void loop_wrapper() {
     setup();
     while(!exit_flag) {
