@@ -1,9 +1,15 @@
 # EmSys Lab 5: ESP32 Timer and Verilog Timer 
 
-In this lab you will write some code that will interact with some of the ESP32 hardware timer peripherals. You will then describe a hardware timer in Verilog and simulate it. You must complete the following tasks for this lab:
+In this lab you will write some code that will interact with some of the ESP32 hardware timer peripherals. You will then describe a hardware timer in Verilog and simulate it. You must complete the following tasks for this lab, each of which is broken down to a few steps:
 
 * [__Task 1__] configure one of the hardware timer peripherals on the ESP32 device.
+	* Step 1: implement ``setupTimer()``.
+	* Step 2: implement ``resetTimer()``.
+	* Step 3: implement ``readTimer()``.
 * [__Task 2__] construct the hardware and MMIO interface for one of the ESP32 hardware timers in Verilog.
+	* Step 1: write the software portion for the hardware simulation.
+	* Step 2: describe the hardware timer (without the prescaler).
+	* Step 3: add the prescaler to the timer.
 
 ## Task 1: Configuring an ESP32 hardware timer
 
