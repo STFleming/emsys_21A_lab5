@@ -1,6 +1,6 @@
 # EmSys Lab 5: ESP32 Timer and Verilog Timer 
 
-In this lab you will write some code that will interact with some of the ESP32 hardware timer peripherals. You will then describe a hardware timer in Verilog and simulate it. You must complete the following tasks for this lab, each of which is broken down to a few steps:
+In this lab, you will write some code that will interact with some of the ESP32 hardware timer peripherals. You will then describe a hardware timer in Verilog and simulate it. You must complete the following tasks for this lab, each of which is broken down into a few steps:
 
 * [__Task 1__] configure one of the hardware timer peripherals on the ESP32 device.
 	* Step 1: implement ``setupTimer()``.
@@ -15,15 +15,15 @@ The steps for each task do not need to be submitted separately. They are there m
 
 ## Task 1: Configuring an ESP32 hardware timer
 
-In your GitHub logbook repository you should have the following directory: ``lab5/task1/task1.ino``. In this folder there is a partially completed sketch for your __TinyPico__ device for configuring a hardware timer module.
+In your GitHub logbook repository, you should have the following directory: ``lab5/task1/task1.ino``. In this folder, there is a partially completed sketch for your __TinyPico__ device for configuring a hardware timer module.
 
-You will have to complete three functions, ``setupTimer``, ``resetTimer``, and ``readTimer`` to complete this task. In each of these functions you will use the hardware memory-mapped registers at the top of the file to configure the bits of the timer and complete the functions.
+You will have to complete three functions, ``setupTimer``, ``resetTimer``, and ``readTimer`` to complete this task. In each of these functions, you will use the hardware memory-mapped registers at the top of the file to configure the bits of the timer and complete the functions.
 
 The only thing that you need to commit to your logbook for this task is the completed sketch ``lab5/task1/task1.ino``.
 
 __For information on how the hardware timer module operates please watch the following mini lecture [[COMMING SOON TO A REPO NEAR YOU]()].__ 
 
-For this task you will be configuring the hardware timer module 0 in timer group 0. Information on these timers can be found the ESP32 [[Technical Reference Manual](https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf)] page 498. In the technical reference manual (TRM) there is details on the operation of the timer and of the individual registers that you need to read and write to in order to configure it. For the timer that we will be configuring in this lab the table below details the registers that you will need to interact with. For each register, a TRM reference is given, this is the reference that you can use to look up more details of that register in the technical reference manual.
+For this task, you will be configuring the hardware timer module 0 in timer group 0. Information on these timers can be found the ESP32 [[Technical Reference Manual](https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf)] page 498. In the technical reference manual (TRM), there are details on the operation of the timer and of the individual registers that you need to read and write to in order to configure it. For the timer that we will be configuring in this lab the table below details the registers that you will need to interact with. For each register, a TRM reference is given, this is the reference that you can use to lookup more details of that register in the TRM.
 
 |   Register   |     Name   |    TRM reference  |   Info |
 |--------------|------------|-------------------|--------|
@@ -47,13 +47,13 @@ The ``setupTimer`` function performs the following tasks:
 __You do not need to worry about your timer generating an alarm__. This means that bits ``EDGE_INT_EN``, `LEVEL_INT_EN``, and ``ALARM_EN`` of the configuration register should all be set to 0.
 
 ### Step 2: ``resetTimer``
-The ``resetTimer`` function resets the timer value so that it starts counter again from a known point. To do this it needs to:
+The ``resetTimer`` function resets the timer value so that it starts counting again from a known point (set by LOADHI and LOADLO). To do this it needs to:
 * Write the lower 32 bits that need to be loaded into the counter into the LOADLO register. 
 * Write the upper 32 bits that need to be loaded into the counter into the LOADHI register. 
 * Perform __any__ write operation on the LOAD register to load {LOADHI, LOADLO} into the counter.
 
 ### Step 3: ``readTimer``
-The ``readTimer`` function returns a 64 bit unsigned number (``uint64_t``) that contains the current value of the timer. To do this it needs to do the following:
+The ``readTimer`` function returns a 64-bit unsigned number (``uint64_t``) that contains the current value of the timer. To do this it needs to do the following:
 * Save the current counter value into the LO and HI registers. The hardware timer will do this when __any__ write occurs on the UPDATE register.
 * Use the LO and HI registers to get the bottom 32 and upper 32 bits of the counter and return it.
 
@@ -67,11 +67,11 @@ void loop() {
 }
 ```
 
-The ``displayTimer()`` function displays the bottom 32 bits of the timer counter value, obtained from the ``readTimer`` function, over serial. The timer count that you see should correspond to the 1000ms delay caused by ``delay(1000);`` make sure that the value you observe makes sense to ensure that your timer is configured correctly. It should be almost 1s, in reality I find it is slightly lower, like 0.9999985 seconds. __NOTE: pay attenting to the prescaler clock divider value that is passed into the ``timerSetup`` in the ``setup()`` function__.
+The ``displayTimer()`` function displays the bottom 32 bits of the timer counter value, obtained from the ``readTimer`` function, over serial. The timer count that you see should correspond to the 1000ms delay caused by ``delay(1000);`` make sure that the value you observe makes sense to ensure that your timer is configured correctly. It should be almost 1s, in reality, I find it is slightly lower, like 0.9999985 seconds. __NOTE: pay attention to the prescaler clock divider value that is passed into the ``timerSetup`` in the ``setup()`` function__.
 
 ## Task 2 : designing a hardware timer peripheral in Verilog
 
-In this task you will design a memory-mapped hardware peripheral in Verilog. It will have same interface as the one you configured in Task 1. You will have to describe the hardware module in Verilog and you will be able to alter the C code that interacts with it from software.  
+In this task, you will design a memory-mapped hardware peripheral in Verilog. It will have the same interface as the one you configured in Task 1. You will have to describe the hardware module in Verilog and you will be able to alter the C code that interacts with it from software.  
 
 The directory for this task is ``lab5/task2``, of your GitHub logbook repository. In this directory you will see a few files:
 * ``sw_driver.h`` - this is where you will put your Arduino-like software code that simulates the code running on the ESP32 that can interact with the hardware that you'll be building.
@@ -79,7 +79,7 @@ The directory for this task is ``lab5/task2``, of your GitHub logbook repository
 * ``Makefile`` - used for building the hardware and software simulation and running it. You should not have to edit this file.
 * ``.build_files`` - "hidden" files that are used for the simulation. You should not have to edit any files in this directory.
 
-To compile and run the hardware software simulation type the following in the directory ``lab5/task2``:
+To compile and run the hardware/software simulation type the following in the directory ``lab5/task2``:
 
 ```
 make
@@ -89,7 +89,7 @@ Let's build up the hardware timer peripheral, and the software to drive it step 
 
 ### Step 1: Setting up the software
 
-In ``sw_driver.h`` we can define the software that will interact with our hardware peripheral. This is setup in a very similar way to the software that you just used on the TinyPico with some subtle differences that I'll explain now. If you scroll down to the bottom you'll see the ``setup()`` and ``loop()`` functions:
+In ``sw_driver.h`` we can define the software that will interact with our hardware peripheral. This is setup in a very similar way to the software that you just used on the TinyPico with some subtle differences that I'll explain now. If you scroll down to the bottom of the code, [[line 50](https://github.com/STFleming/emsys_21A_lab5/blob/0afdaf82d9eb8519c39923c330ed27e74338c0e6/task2/sw_driver.h#L50)], you'll see the ``setup()`` and ``loop()`` functions:
 
 ```C
 uint32_t i;
@@ -117,7 +117,7 @@ void loop() {
 This should look pretty close to what you saw in task 1. 
 * We setup the timer in the ``setup()`` function, by calling ``timerSetup()``.
 * In the loop we reset the timer by calling ``resetTimer()``.
-* In the loop we then delay the software execution for a bit by calling ``delay(50)``. However, unlike the ``delay()`` function on the ESP32 this function will not delay the simulation by that many milliseconds, instead it delays it by that many clock cycles of the simulation.
+* In the loop we then delay the software execution for a bit by calling ``delay(50)``. However, unlike the ``delay()`` function on the ESP32, this function will not delay the simulation by that many milliseconds, instead, it delays it by that many clock cycles of the simulation.
 * We then print the timer value with ``displayTimer()``.
 * Finally, we end the simulation by calling ``exit()``.
 
