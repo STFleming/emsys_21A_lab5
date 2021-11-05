@@ -123,16 +123,16 @@ This should look pretty close to what you saw in task 1.
 
 __In this step your task is to reimplement the ``setupTimer()``, ``resetTimer()``, and ``readTimer()`` functions in exactly the same way as in the task in ``sw_driver.h``__ 
 
-__There is one other small change__ that you need to make! Unfortunately, for the simulation, pointers to memory mapped locations wont work. Instead we need to use the ``readReg()`` and ``writeReg()`` functions to interact with our hardware registers.
+__There is one other small change__ that you need to make! Unfortunately, for the simulation, pointers to memory-mapped locations won't work. Instead we need to use the ``readReg()`` and ``writeReg()`` functions to interact with our hardware registers.
 
-Let's say that we want to read the configuration register of our timer peripheral, which is at address ``0x3FF5F000``. To read a memory-mapped hardware register in ``sw_driver.h`` we can do the following:
+Say we want to read the configuration register of our timer peripheral, which is at address ``0x3FF5F000``. To read a memory-mapped hardware register in ``sw_driver.h`` we can do the following:
 ```C
 uint32_t hw_reg_value = readReg(0x3FF5F000);
 ```
 
-The variable ``hw_reg_value`` should now contain the contents of the configuration register (if the hardware has been implemented correctly). The ``uint32_t`` is type that says that this is a 32-bit unsigned integer, we can also use ``uint64_t`` for 64-bit unsigned integers, ``uint16_t`` for 16 bit, and ``uint8_t`` for 8-bit. 
+The variable ``hw_reg_value`` should now contain the contents of the configuration register (if the hardware has been implemented correctly). The ``uint32_t`` type says that ``hw_reg_value``, is a 32-bit unsigned integer, we can also use ``uint64_t`` for 64-bit unsigned integers, ``uint16_t`` for 16 bit, and ``uint8_t`` for 8-bit. 
 
-In ``sw_driver.h`` you'll find that some variables have already been created for the same memory addresses we used in task 1. So instead of the code above to read a register we could also write.
+In ``sw_driver.h`` you'll find that some variables have already been created for the same memory addresses we used in task 1. So instead of the code above to read a register, we could also write.
 ```C
 uint32_t hw_reg_value = readReg(timg0_t0config_reg);
 ```
@@ -153,11 +153,11 @@ The next step is to start constructing the hardware timer in ``timer.sv`` that t
 
 In ``timer.sv`` you will the ports list for our module along with some logic that is used for creating a memory-mapped hardware interface. __This interface is described in the following video that I highly recommend that you watch [[here](https://www.youtube.com/watch?v=gax3yg27doc&t=1s)].
 
-Some of the registers have already been defined. For instance, the configuration register, let's walk through that register now. Beneath the ports list we can see that the signal for that register has been defined.
+Some of the registers have already been defined. For instance, the configuration register, let's walk through that register now. Beneath the ports list, we can see that the signal for that register has been defined.
 ```v
 logic [31:0] config_reg;
 ```
-When we write to this register the ``wr_in`` signal is high, the address signal (``addr_in``) is set to ``0x3FF5F000``, and the data we are writing is contained in ``data_in``. In the write interface we first check the top 16 bits of the address and the write signal with an if statement on [[line 37](https://github.com/STFleming/emsys_21A_lab5/blob/c5b217db57fb7257963cd7d5dfacf459ce8b972e/task2/timer.sv#L37)].
+When we write to this register the ``wr_in`` signal is high, the address signal (``addr_in``) is set to ``0x3FF5F000``, and the data we are writing is contained in ``data_in``. In the write interface, we first check the top 16 bits of the address and the write signal with an if statement on [[line 37](https://github.com/STFleming/emsys_21A_lab5/blob/c5b217db57fb7257963cd7d5dfacf459ce8b972e/task2/timer.sv#L37)].
 
 ```v
         if ((addr_in[31:16] == 16'h3FF5) & wr_in) begin
@@ -176,9 +176,9 @@ If that matches we then check the bottom bits to determine the correct register 
 
 ![](misc/timer_hardware_without_prescaler.png)
 
-__In this step you need to create the 64-bit timer module that is compatible with the software that you wrote in the previous step. However, for this first task you can ignore the clock prescaler, just imagine that it is always set to 0.__ 
+__In this step, you need to create the 64-bit timer module that is compatible with the software that you wrote in the previous step. However, for this first task you can ignore the clock prescaler, just imagine that it is always set to 0.__ 
 
-Above is a sketch for what your hardware _could_ look like. At the center, we have a unit which I have given the name ADD_OR_SUB. This unit examines the enable bit of the configuration register, EN, and if it is high it either adds 1 or subtracts 1 from the input depending on the value of the INCREASE configuration bit. 
+Above is a sketch of what your hardware _could_ look like. At the centre, we have a unit for which I have given the name ADD_OR_SUB. This unit examines the enable bit of the configuration register, EN, and if it is high it either adds 1 or subtracts 1 from the input depending on the value of the INCREASE configuration bit. 
 
 The input to the ADD_OR_SUB module is the output of a 64-bit register that holds the current counter value. The input to the 64-bit register is either, the output of the ADD_OR_SUB module, or the values of LOADHI and LOADLO depending on if a LOAD operation has been triggered. 
 
@@ -208,7 +208,7 @@ However, if a write to the LOAD address is detected, this assignment is temporar
         end
 ```
 
-The final part of the hardware is the registers that stores the top 32-bits, HI, and bottom 32-bits, LO, of the counter value. These values are saved whenever _any_ write occurs to the UPDATE register, so they will likely need to be write enabled based on some sort of update signal that is similar to the ``load_triggered`` signal I discussed above. 
+The final part of the hardware is the registers that store the top 32-bits, HI, and bottom 32-bits, LO, of the counter value. These values are saved whenever _any_ write occurs to the UPDATE register, so they will likely need to be write-enabled based on some sort of update signal that is similar to the ``load_triggered`` signal I discussed above. 
 
 __Your task in this step of the lab is to describe the hardware above using Verilog in the ``timer.sv`` file. It should work with the software that you wrote in the previous step to count the number of clock cycles for the ``delay()`` function call.__
 
