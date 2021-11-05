@@ -1,11 +1,9 @@
-# EmSys Lab 5: ESP32 PWM and Verilog PWM 
+# EmSys Lab 5: ESP32 Timer and Verilog Timer 
 
-In this lab you will write some code that will interact with some of the hardware peripherals. You will then describe those hardware peripherals in Verilog and simulate them. You must complete the following tasks for this lab:
+In this lab you will write some code that will interact with some of the ESP32 hardware timer peripherals. You will then describe a hardware timer in Verilog and simulate it. You must complete the following tasks for this lab:
 
 * [__Task 1__] configure one of the hardware timer peripherals on the ESP32 device.
 * [__Task 2__] construct the hardware and MMIO interface for one of the ESP32 hardware timers in Verilog.
-* [__Task 3__] configure one of the PWM peripheral to generate a PWM signal on your ESP32 device.
-* [__Task 4__] construct the hardware and MMIO interface for a PWM peripheral in Verilog.
 
 ## Task 1: Configuring an ESP32 hardware timer
 
