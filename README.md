@@ -219,12 +219,47 @@ This might seem like a daunting task, but it will be okay if you take it step by
 
 The final step is to add the prescaler to the hardware timer peripheral. This prescaler controls the rate at which the counter increments based on the setting of the DIVIDER bits in the CONFIG register for the timer. How I would develop this, is to create a prescaler unit that has a counter built that pulses a signal, which I have called prescale_enable, that only enables the ADD_OR_SUB module every N clock cycles. However, there are a few ways to add the prescaler, so don't feel restricted by my approach. 
 
-When your hardware is completed you should see the following output for the timer values when ``setupTimer(4)`` and ``delay(100)`` are used in ``sw_driver.h``.
+When your hardware is completed you should see the following output for the timer values when ``setupTimer(4)`` and ``delay(100)`` are used in ``sw_driver.h``. __Note there might be some slight differences between readings due to the asynchronous way that the SW simulator and HW simulator communicate.__
 
 ```
+-- RUN ---------------------
+obj_dir/Vtop_tb +trace
+[1] Tracing to logs/vlt_dump.vcd...
+
+[1] Model running...
+
+Timer=24
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
+Timer=25
 
 ```
 
 When ``setup(2)`` and ``setup(1)`` and ``delay(100)`` you should see the following output for the timer values:
 ```
+-- RUN ---------------------
+obj_dir/Vtop_tb +trace
+[1] Tracing to logs/vlt_dump.vcd...
+
+[1] Model running...
+
+Timer=48
+Timer=50
+Timer=50
+Timer=50
+Timer=50
+Timer=50
+Timer=51
+Timer=50
+Timer=50
+Timer=50
+Timer=50
+
 ```
