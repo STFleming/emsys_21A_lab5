@@ -11,6 +11,8 @@ In this lab you will write some code that will interact with some of the ESP32 h
 	* Step 2: describe the hardware timer (without the prescaler).
 	* Step 3: add the prescaler to the timer.
 
+The steps for each task do not need to be submitted separately. They are there more a guide for how to go about completing the tasks.
+
 ## Task 1: Configuring an ESP32 hardware timer
 
 In your GitHub logbook repository you should have the following directory: ``lab5/task1/task1.ino``. In this folder there is a partially completed sketch for your __TinyPico__ device for configuring a hardware timer module.
@@ -206,7 +208,7 @@ However, if a write to the LOAD address is detected, this assignment is temporar
         end
 ```
 
-The final part of the hardware is the registers that store the top 32-bits, HI, and bottom 32-bits, LO, of the counter value. These values are saved whenever _any_ write occurs to the UPDATE register, so they will likely need to be write enabled based on some sort of update signal that is similar to the ``load_triggered`` signal I discussed above. 
+The final part of the hardware is the registers that stores the top 32-bits, HI, and bottom 32-bits, LO, of the counter value. These values are saved whenever _any_ write occurs to the UPDATE register, so they will likely need to be write enabled based on some sort of update signal that is similar to the ``load_triggered`` signal I discussed above. 
 
 __Your task in this step of the lab is to describe the hardware above using Verilog in the ``timer.sv`` file. It should work with the software that you wrote in the previous step to count the number of clock cycles for the ``delay()`` function call.__
 
@@ -214,3 +216,15 @@ This might seem like a daunting task, but it will be okay if you take it step by
 
 ### Step 3: Hardware timer with prescaler
 ![](misc/timer_hardware_with_prescaler.png)
+
+The final step is to add the prescaler to the hardware timer peripheral. This prescaler controls the rate at which the counter increments based on the setting of the DIVIDER bits in the CONFIG register for the timer. How I would develop this, is to create a prescaler unit that has a counter built that pulses a signal, which I have called prescale_enable, that only enables the ADD_OR_SUB module every N clock cycles. However, there are a few ways to add the prescaler, so don't feel restricted by my approach. 
+
+When your hardware is completed you should see the following output for the timer values when ``setupTimer(4)`` and ``delay(100)`` are used in ``sw_driver.h``.
+
+```
+
+```
+
+When ``setup(2)`` and ``setup(1)`` and ``delay(100)`` you should see the following output for the timer values:
+```
+```
