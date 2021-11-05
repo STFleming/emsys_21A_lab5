@@ -170,13 +170,41 @@ If that matches we then check the bottom bits to determine the correct register 
 
 __In this step you need to create the 64-bit timer module that is compatible with the software that you wrote in the previous step. However, for this first task you can ignore the clock prescaler, just imagine that it is always set to 0.__ 
 
-Above is a sketch for what your hardware _could_ look like, it doesn't necessarily need to conform to this. At the center, we have a unit which I have given the name ADD_OR_SUB. This unit examines the enable bit of the configuration register and if it is high it then either adds 1 or subtracts 1 from the input depending on the value of the INCREASE configuration bit. 
+Above is a sketch for what your hardware _could_ look like. At the center, we have a unit which I have given the name ADD_OR_SUB. This unit examines the enable bit of the configuration register, EN, and if it is high it either adds 1 or subtracts 1 from the input depending on the value of the INCREASE configuration bit. 
 
-The input to the ADD_OR_SUB module is the output of a 64-bit register that holds the current counter value. The input to this register is either, the output of the ADD_OR_SUB module, or the values of LOADHI and LOADLO depending on if a LOAD operation has been triggered. 
+The input to the ADD_OR_SUB module is the output of a 64-bit register that holds the current counter value. The input to the 64-bit register is either, the output of the ADD_OR_SUB module, or the values of LOADHI and LOADLO depending on if a LOAD operation has been triggered. 
 
 In the timer module there are some registers that are not used for values, but to trigger an action. One example is the LOAD register. Whenever __any__ write operation is performed on this register it loads the value in LOADHI and LOADLO into the 64-bit counter. This is slightly different to the configuration register we discussed above, so I have included another example in ``timer.sv`` to demonstrate this. 
 
+On [[line 29](https://github.com/STFleming/emsys_21A_lab5/blob/c5b217db57fb7257963cd7d5dfacf459ce8b972e/task2/timer.sv#L29)] there is a load_triggered signal, which I want to remain high for one clock cycle to trigger the loading event when the LOAD register is written to.
 
+```v
+logic load_triggered;
+```
+
+In the write process, I have a default condition that sets the ``load_triggered`` signal to 0 every clock edge, see [[line 35](https://github.com/STFleming/emsys_21A_lab5/blob/c5b217db57fb7257963cd7d5dfacf459ce8b972e/task2/timer.sv#L35)]. 
+```v
+// write interface logic
+always_ff @(posedge clk) begin
+
+        // default
+        load_triggered <= 1'b0;
+```
+
+However, if a write to the LOAD address is detected, this assignment is temporarily overwritten until the write completes, see [[line 45](https://github.com/STFleming/emsys_21A_lab5/blob/c5b217db57fb7257963cd7d5dfacf459ce8b972e/task2/timer.sv#L45)]. 
+
+```v
+        // Trigger a load
+        16'hF020: begin
+                load_triggered <= 1'b1;               
+        end
+```
+
+The final part of the hardware is the registers that store the top 32-bits, HI, and bottom 32-bits, LO, of the counter value. These values are saved whenever _any_ write occurs to the UPDATE register, so they will likely need to be write enabled based on some sort of update signal that is similar to the ``load_triggered`` signal I discussed above. 
+
+__Your task in this step of the lab is to describe the hardware above using Verilog in the ``timer.sv`` file. It should work with the software that you wrote in the previous step to count the number of clock cycles for the ``delay()`` function call.__
+
+This might seem like a daunting task, but it will be okay if you take it step by step. I recommend starting with reading and writing to the configuration register and examining the outputs on gtkwave to see how the register is being written to and going from there.
 
 ### Step 3: Hardware timer with prescaler
 ![](misc/timer_hardware_with_prescaler.png)
