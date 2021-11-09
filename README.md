@@ -21,7 +21,7 @@ You will have to complete three functions, ``setupTimer``, ``resetTimer``, and `
 
 The only thing that you need to commit to your logbook for this task is the completed sketch ``lab5/task1/task1.ino``.
 
-__For information on how the hardware timer module operates please watch the following mini lecture [[COMING SOON TO A REPO NEAR YOU]()].__ 
+__For information on how the hardware timer module operates please watch the following mini lecture [[video](https://youtu.be/XMJrXcN7FpA)].__ 
 
 For this task, you will be configuring the hardware timer module 0 in timer group 0. Information on these timers can be found the ESP32 [[Technical Reference Manual](https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf)] page 498. In the technical reference manual (TRM), there are details on the operation of the timer and of the individual registers that you need to read and write to in order to configure it. For the timer that we will be configuring in this lab the table below details the registers that you will need to interact with. For each register, a TRM reference is given, this is the reference that you can use to lookup more details of that register in the TRM.
 
