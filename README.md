@@ -123,7 +123,7 @@ This should look pretty close to what you saw in task 1.
 
 __In this step your task is to reimplement the ``setupTimer()``, ``resetTimer()``, and ``readTimer()`` functions in exactly the same way as in the task in ``sw_driver.h``__ 
 
-__There is one other small change__ that you need to make! Unfortunately, for the simulation, pointers to memory-mapped locations won't work. Instead we need to use the ``readReg()`` and ``writeReg()`` functions to interact with our hardware registers.
+__There is one other small change__ that you need to make! Unfortunately, for the simulation, pointers to memory-mapped locations won't work. Instead we need to use the ``readReg()`` and ``regWrite()`` functions to interact with our hardware registers.
 
 Say we want to read the configuration register of our timer peripheral, which is at address ``0x3FF5F000``. To read a memory-mapped hardware register in ``sw_driver.h`` we can do the following:
 ```C
@@ -138,7 +138,7 @@ uint32_t hw_reg_value = readReg(timg0_t0config_reg);
 ```
 To get the same result.
 
-Now, say we want to write to bit 0 of the configuration register. Instead of using a pointer in the simulation we have to use the ``writeReg()`` function. We can write to the register in the following way.
+Now, say we want to write to bit 0 of the configuration register. Instead of using a pointer in the simulation we have to use the ``regWrite()`` function. We can write to the register in the following way.
 ```C
 regWrite(timg0_t0config_reg, 1);
 ```
@@ -151,7 +151,7 @@ __Note: typing ``make`` to test your functions wont work yet as the timer hardwa
 
 The next step is to start constructing the hardware timer in ``timer.sv`` that the software you just wrote in the previous step will interact with. 
 
-In ``timer.sv`` you will the ports list for our module along with some logic that is used for creating a memory-mapped hardware interface. __This interface is described in the following video that I highly recommend that you watch [[here](https://www.youtube.com/watch?v=gax3yg27doc&t=1s)].
+In ``timer.sv`` you will the ports list for our module along with some logic that is used for creating a memory-mapped hardware interface. __This interface is described in the following video that I highly recommend that you watch__ [[here](https://www.youtube.com/watch?v=gax3yg27doc&t=1s)].
 
 Some of the registers have already been defined. For instance, the configuration register, let's walk through that register now. Beneath the ports list, we can see that the signal for that register has been defined.
 ```v
